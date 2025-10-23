@@ -1,35 +1,61 @@
 package com.weiyi.demoWordle.service;
 
-import com.weiyi.demoWordle.entity.GameLevel;
-import com.weiyi.demoWordle.entity.GameSession;
+import com.weiyi.demoWordle.entity.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class GameServiceImpl implements GameService{
 
     private LevelWordService theLevelWordService;
-    private Map<String, GameSession> session;
+    private Map<String, GameSession> sessions;
 
-    public GameServiceImpl() {
-    }
-
+    @Autowired
     public GameServiceImpl(LevelWordService theLevelWordService) {
         this.theLevelWordService = theLevelWordService;
-        this.session = new HashMap<>();
+        this.sessions = new HashMap<>();
     }
 
 
     @Override
     public GameSession startNewGame(GameLevel level) {
+        String word = theLevelWordService.getRandomWordByLevel(level);
+        int maxRounds = switch (level) {
+            case EASY -> 8;
+            case MEDIUM -> 6;
+            case HARD -> 5;
+            case EXPERT -> 4;
+        };
 
-        return null;
+        GameSession session = new GameSession(word, maxRounds);
+        String sessionId = UUID.randomUUID().toString();
+        session.setSessionId(sessionId);
+        // Attach the ID inside GameSession (optional, add a field for convenience)
+        sessions.put(sessionId, session);
+
+        System.out.printf("Started new %s game (Session: %s) with word: %s%n", level, sessionId, word);
+        return session;
     }
 
     @Override
-    public GameSession makeGuess(String guess, String sessionId) {
-        return null;
+    public FeedbackResult makeGuess(String sessionId, String guess) {
+        GameSession session = sessions.get(sessionId);
+        if (session == null) throw new IllegalStateException("No active session found for ID: " + sessionId);
+
+        FeedbackResult result = session.makeGuess(guess);
+
+        // Save updated session
+        sessions.put(sessionId, session);
+        return result;
+    }
+
+
+    @Override
+    public GameSession getSession(String sessionId) {
+        GameSession session = sessions.get(sessionId);
+        if (session == null) throw new IllegalStateException("Session not found: " + sessionId);
+        return session;
     }
 }

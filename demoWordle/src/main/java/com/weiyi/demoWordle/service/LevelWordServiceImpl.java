@@ -2,39 +2,38 @@ package com.weiyi.demoWordle.service;
 
 import com.weiyi.demoWordle.entity.GameLevel;
 import jakarta.annotation.PostConstruct;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.stereotype.Service;
+
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Service
 public class LevelWordServiceImpl implements LevelWordService{
 
-    private List<String> words;
-    private Map<GameLevel, List<String>> levelWords;
+    private List<String> words = new ArrayList<>();
+    private Map<GameLevel, List<String>> levelWords = new HashMap<>();
 
-    private SecureRandom random;
+    private SecureRandom random = new SecureRandom();
 
-    public LevelWordServiceImpl() {}
-
-    public LevelWordServiceImpl(List<String> words, Map<GameLevel, List<String>> levelWords) {
-        this.words = words;
-        this.levelWords = levelWords;
-        this.random = new SecureRandom();
-    }
 
     // read the txt files only once
     @PostConstruct
     public void loadWords() {
-        words = readWordsFromFile("five_letter_words.txt");
-        levelWords.put(GameLevel.EASY, readWordsFromFile("easy_level_words.txt"));
-        levelWords.put(GameLevel.MEDIUM, readWordsFromFile("medium_level_words.txt"));
-        levelWords.put(GameLevel.HARD, readWordsFromFile("hard_level_words.txt"));
-        levelWords.put(GameLevel.EXPERT, readWordsFromFile("expert_level_words.txt"));
+        words = readWordsFromFile("wordLists/five_letter_words.txt");
+        levelWords.put(GameLevel.EASY, readWordsFromFile("wordLists/easy_level_words.txt"));
+        levelWords.put(GameLevel.MEDIUM, readWordsFromFile("wordLists/medium_level_words.txt"));
+        levelWords.put(GameLevel.HARD, readWordsFromFile("wordLists/hard_level_words.txt"));
+        levelWords.put(GameLevel.EXPERT, readWordsFromFile("wordLists/expert_level_words.txt"));
     }
 
 

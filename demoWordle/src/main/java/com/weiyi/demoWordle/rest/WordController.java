@@ -1,11 +1,14 @@
 package com.weiyi.demoWordle.rest;
 
 
-import com.weiyi.demoWordle.service.WordService;
+import com.weiyi.demoWordle.entity.FeedbackResult;
+import com.weiyi.demoWordle.entity.GameLevel;
+import com.weiyi.demoWordle.entity.GameSession;
+import com.weiyi.demoWordle.service.GameService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.Map;
 
 // separate from the frontend
 //@CrossOrigin(origins = "http://localhost:3000")
@@ -13,20 +16,39 @@ import java.util.List;
 @RequestMapping("/api/wordle")
 public class WordController {
 
-    private WordService wordService;
+    private GameService gameService;
 
     @Autowired
-    public WordController(WordService wordService) {
-        this.wordService = wordService;
+    public WordController(GameService gameService) {
+        this.gameService = gameService;
     }
 
-    @GetMapping("/words")
-    public List<String> getWord() {
-        return wordService.getAllWords();
+
+//
+//    // test webpage to show all the words we have
+//    @GetMapping("/words")
+//    public List<String> getWord() {
+//        return wordService.getAllWords();
+//    }
+
+    @PostMapping("/start")
+    public GameSession startGame(@RequestParam GameLevel level) {
+        return gameService.startNewGame(level);
     }
 
-    @PostMapping("/check")
-    public boolean checkWord() {
-        return false;
+    @PostMapping("/guess/{sessionId}")
+    public FeedbackResult makeGuess(@PathVariable String sessionId,
+                                    @RequestBody Map<String, String> body) {
+        String guess = body.get("guess");
+        GameSession session = gameService.getSession(sessionId);
+        return session.makeGuess(guess);
     }
+
+
+
+    @GetMapping("/state/{sessionId}")
+    public GameSession getState(@PathVariable String sessionId) {
+        return gameService.getSession(sessionId);
+    }
+    
 }
