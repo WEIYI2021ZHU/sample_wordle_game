@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import WordleBoard from "./WordleBoard";
-import "./Game.css";
+import "../styles/Game.css";
 
 const API_BASE = "http://localhost:8080/api/game";
 

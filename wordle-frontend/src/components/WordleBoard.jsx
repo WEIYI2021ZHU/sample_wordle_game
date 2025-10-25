@@ -1,5 +1,5 @@
 import React from "react";
-import "./WordleBoard.css";
+import "../styles/WordleBoard.css";
 
 export default function WordleBoard({ feedbacks }) {
   return (
