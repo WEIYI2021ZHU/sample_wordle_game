@@ -20,7 +20,7 @@ public class GameServiceImpl implements GameService{
 
 
     @Override
-    public GameSession startNewGame(GameLevel level) {
+    public GameSession startNewGame(GameLevel level, GameMode mode) {
         String word = theLevelWordService.getRandomWordByLevel(level);
         int maxRounds = switch (level) {
             case EASY -> 8;
@@ -30,12 +30,21 @@ public class GameServiceImpl implements GameService{
         };
 
         GameSession session = new GameSession(word, maxRounds);
+        session.setLevel(level);
+        session.setMode(mode);
         String sessionId = UUID.randomUUID().toString();
         session.setSessionId(sessionId);
-        // Attach the ID inside GameSession (optional, add a field for convenience)
+
+        if (mode == GameMode.MULTIPLE) {
+            session.setPlayerIds(new ArrayList<>());
+            session.setScores(new HashMap<>());
+        }
+
         sessions.put(sessionId, session);
 
-        System.out.printf("Started new %s game (Session: %s) with word: %s%n", level, sessionId, word);
+
+        // used to test the method
+//        System.out.printf("Started new %s game (Session: %s) with word: %s%n", level, sessionId, word);
         return session;
     }
 

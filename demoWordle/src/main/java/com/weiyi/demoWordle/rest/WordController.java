@@ -3,6 +3,7 @@ package com.weiyi.demoWordle.rest;
 
 import com.weiyi.demoWordle.entity.FeedbackResult;
 import com.weiyi.demoWordle.entity.GameLevel;
+import com.weiyi.demoWordle.entity.GameMode;
 import com.weiyi.demoWordle.entity.GameSession;
 import com.weiyi.demoWordle.service.GameService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,9 +32,11 @@ public class WordController {
 //        return wordService.getAllWords();
 //    }
 
+    // At the start, user could choose a level of difficulty
     @PostMapping("/start")
-    public GameSession startGame(@RequestParam GameLevel level) {
-        return gameService.startNewGame(level);
+    public GameSession startGame(@RequestParam GameLevel level,
+                                 @RequestParam GameMode mode) {
+        return gameService.startNewGame(level, mode);
     }
 
     @PostMapping("/guess/{sessionId}")
@@ -44,11 +47,9 @@ public class WordController {
         return session.makeGuess(guess);
     }
 
-
-
     @GetMapping("/state/{sessionId}")
     public GameSession getState(@PathVariable String sessionId) {
         return gameService.getSession(sessionId);
     }
-    
+
 }

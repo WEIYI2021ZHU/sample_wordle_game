@@ -26,7 +26,7 @@ public class LevelWordServiceImpl implements LevelWordService{
     private SecureRandom random = new SecureRandom();
 
 
-    // read the txt files only once
+    /** read the txt files only once **/
     @PostConstruct
     public void loadWords() {
         words = readWordsFromFile("wordLists/five_letter_words.txt");
@@ -37,7 +37,7 @@ public class LevelWordServiceImpl implements LevelWordService{
     }
 
 
-    // read the data from txt files
+    /** read the data from txt files **/
     private List<String> readWordsFromFile(String fileName) {
         try (BufferedReader reader = new BufferedReader(
                 new InputStreamReader(

@@ -1,16 +1,24 @@
 package com.weiyi.demoWordle.entity;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class GameSession {
     private final String answer;
     private int currentRound;
     private final int maxRounds;
+    private GameLevel level;
     private GameStatus status;
+    private GameMode mode;
     private final List<String> history;
     private final List<List<String>> colorHistory;
     private String sessionId;
+
+    // Multiplayer fields
+    private List<String> playerIds;  // multiple players
+    private Map<String, Integer> scores;  // track each player's score
 
     // start a new session to guess
     public GameSession(String answer, int maxRounds) {
@@ -20,6 +28,8 @@ public class GameSession {
         this.status = GameStatus.IN_PROGRESS;
         this.history = new ArrayList<>();
         this.colorHistory = new ArrayList<>();
+        this.playerIds = new ArrayList<>();
+        this.scores = new HashMap<>();
     }
 
     public FeedbackResult makeGuess(String guess) {
@@ -102,8 +112,27 @@ public class GameSession {
         return maxRounds;
     }
 
+    public GameLevel getLevel() {
+        return level;
+    }
+
+    public void setLevel(GameLevel level) {
+        this.level = level;
+    }
+
     public GameStatus getStatus() {
         return status;
+    }
+    public void setStatus(GameStatus status) {
+        this.status = status;
+    }
+
+    public GameMode getMode() {
+        return mode;
+    }
+
+    public void setMode(GameMode mode) {
+        this.mode = mode;
     }
 
     public List<String> getHistory() {
@@ -120,5 +149,22 @@ public class GameSession {
 
     public void setSessionId(String sessionId) {
         this.sessionId = sessionId;
+    }
+
+
+    public List<String> getPlayerIds() {
+        return playerIds;
+    }
+
+    public void setPlayerIds(List<String> playerIds) {
+        this.playerIds = playerIds;
+    }
+
+    public Map<String, Integer> getScores() {
+        return scores;
+    }
+
+    public void setScores(Map<String, Integer> scores) {
+        this.scores = scores;
     }
 }
