@@ -3,10 +3,12 @@ import axios from "axios";
 import WordleBoard from "./WordleBoard";
 import "../styles/Game.css";
 
-const API_BASE = "http://localhost:8080/api/game";
+const API_BASE = "http://localhost:8080/api/Wordle";
 
 export default function Game() {
+  // connect it with the backend
   const [sessionId, setSessionId] = useState(null);
+  // by default the level is set to EASY
   const [level, setLevel] = useState("EASY");
   const [guess, setGuess] = useState("");
   const [feedbacks, setFeedbacks] = useState([]);
@@ -73,6 +75,7 @@ export default function Game() {
             <option value="HARD">Hard</option>
             <option value="EXPERT">Expert</option>
           </select>
+          <br/>
           <button onClick={startGame}>Start Game</button>
         </div>
       )}
