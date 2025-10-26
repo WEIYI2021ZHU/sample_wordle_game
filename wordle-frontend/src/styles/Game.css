@@ -57,6 +57,7 @@ h1 {
   font-size: 2rem;
   font-weight: bold;
   animation: fadeInOut 3s ease-in-out;
+  pointer-events: none;
 }
 
 .banner.win {
@@ -72,4 +73,21 @@ h1 {
   20% { opacity: 1; transform: translate(-50%, -50%); }
   80% { opacity: 1; transform: translate(-50%, -50%); }
   100% { opacity: 0; transform: translate(-50%, -40%); }
+}
+
+
+.restart-btn {
+  font-size: 1.1rem;
+  padding: 10px 18px;
+  border-radius: 8px;
+  margin-top: 20px;
+  background: linear-gradient(90deg, #4caf50, #2e7d32);
+  color: white;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+.restart-btn:hover {
+  background: linear-gradient(90deg, #66bb6a, #388e3c);
+  box-shadow: 0 0 8px #4caf50;
 }

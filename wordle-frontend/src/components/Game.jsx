@@ -3,7 +3,7 @@ import axios from "axios";
 import WordleBoard from "./WordleBoard";
 import "../styles/Game.css";
 
-const API_BASE = "http://localhost:8080/api/Wordle";
+const API_BASE = "http://localhost:8080/api/wordle";
 
 export default function Game() {
   // connect it with the backend
@@ -14,12 +14,16 @@ export default function Game() {
   const [feedbacks, setFeedbacks] = useState([]);
   const [status, setStatus] = useState("NOT_STARTED");
   const [banner, setBanner] = useState(null);
+  const [error, setError] = useState(null);
+  const [answer, setAnswer] = useState(null);
 
   // Start new game
   const startGame = async () => {
     try {
-      const res = await axios.post(`${API_BASE}/start?level=${level}`);
+      const res = await axios.post(`${API_BASE}/start?level=${level}&mode=SINGLE`);
       setSessionId(res.data.sessionId);
+      setGuess("");
+      setError("");
       setFeedbacks([]);
       setStatus("IN_PROGRESS");
       setBanner(null);
@@ -30,11 +34,6 @@ export default function Game() {
 
   // Make a guess
   const makeGuess = async () => {
-    if (!guess || guess.length !== 5) {
-      alert("Please enter a 5-letter word.");
-      return;
-    }
-
     try {
       const res = await axios.post(`${API_BASE}/guess/${sessionId}`, {
         guess: guess.toLowerCase(),
@@ -45,17 +44,22 @@ export default function Game() {
 
       if (res.data.status === "WIN") {
         setStatus("WIN");
-        setBanner("🎉 You Win!");
+        setBanner("You Win!");
       } else if (res.data.status === "LOSE") {
         setStatus("LOSE");
-        setBanner("💀 Game Over!");
+        setBanner("Game Over!");
       }
     } catch (err) {
-      console.error("Error making guess:", err);
+      // Catch invalid word from backend
+      const message = err.response?.data?.error || "Error making guess. Please try again.";
+      setError(message);
+
+      // Optional: alert user for visibility
+      alert(message);
     }
   };
 
-  // Auto-restart after 3 seconds
+  //xAuto-restart after 3 seconds
   const restartAfterDelay = () => {
     setTimeout(() => {
       startGame();
@@ -99,6 +103,20 @@ export default function Game() {
       {banner && (
         <div className={`banner ${status.toLowerCase()}`}>
           <p>{banner}</p>
+          <p>The answer is: </p>
+          <p> </p>
+        </div>
+      )}
+
+      {/* After the current game, the user could start a new game*/}
+      {(status === "WIN" || status === "LOSE") && (
+        <div>
+          <button
+          className="restart-btn"
+          onClick={startGame}
+          style={{ marginTop: "20px" }}>
+          New Game
+        </button>
         </div>
       )}
     </div>

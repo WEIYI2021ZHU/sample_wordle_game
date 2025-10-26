@@ -1,6 +1,10 @@
 package com.weiyi.demoWordle.service;
 
 import com.weiyi.demoWordle.entity.*;
+import com.weiyi.demoWordle.exception.DigitsFoundException;
+import com.weiyi.demoWordle.exception.InvalidLengthException;
+import com.weiyi.demoWordle.exception.InvalidWordException;
+import com.weiyi.demoWordle.exception.SessionNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -51,8 +55,25 @@ public class GameServiceImpl implements GameService{
     @Override
     public FeedbackResult makeGuess(String sessionId, String guess) {
         GameSession session = sessions.get(sessionId);
-        if (session == null) throw new IllegalStateException("No active session found for ID: " + sessionId);
-
+        // check if this session is valid
+        if (session == null) {
+            throw new SessionNotFoundException(sessionId);
+        }
+        if (guess == null) {
+            throw new RuntimeException("Please enter a five-letter word");
+        }
+        if (guess.length() != 5) {
+            throw new InvalidLengthException(5, guess.length());
+        }
+        // check if the guess contains digits
+        if (guess.matches(".*\\d+.*")) {
+            throw new DigitsFoundException(guess);
+        }
+        guess = guess.toLowerCase();
+        // check if the guess is in the dictionary
+        if (!theLevelWordService.getWords().contains(guess)) {
+            throw new InvalidWordException(guess);
+        }
         FeedbackResult result = session.makeGuess(guess);
 
         // Save updated session

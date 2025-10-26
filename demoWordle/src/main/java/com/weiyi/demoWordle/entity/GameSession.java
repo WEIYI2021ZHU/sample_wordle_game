@@ -33,7 +33,7 @@ public class GameSession {
     }
 
     public FeedbackResult makeGuess(String guess) {
-        guess = guess.toLowerCase();
+//        guess = guess.toLowerCase();
         currentRound++;
 
         // check the guess and store the colors of each cell

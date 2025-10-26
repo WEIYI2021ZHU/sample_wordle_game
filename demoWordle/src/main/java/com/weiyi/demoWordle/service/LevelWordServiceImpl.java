@@ -68,4 +68,9 @@ public class LevelWordServiceImpl implements LevelWordService{
         if (theWords.isEmpty()) return null;
         return theWords.get(random.nextInt(theWords.size()));
     }
+
+    @Override
+    public List<String> getWords() {
+        return words;
+    }
 }

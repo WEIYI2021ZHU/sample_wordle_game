@@ -11,4 +11,7 @@ public interface LevelWordService {
 
     /** Get a random word for a specific level */
     String getRandomWordByLevel(GameLevel level);
+
+    /** Get the list of words for a specific level */
+    List<String> getWords();
 }
