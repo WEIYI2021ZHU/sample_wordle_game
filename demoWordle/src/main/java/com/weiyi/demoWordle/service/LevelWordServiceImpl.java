@@ -11,10 +11,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -67,6 +64,21 @@ public class LevelWordServiceImpl implements LevelWordService{
         // check if the list is empty
         if (theWords.isEmpty()) return null;
         return theWords.get(random.nextInt(theWords.size()));
+    }
+
+    @Override
+    public List<String> getRandomWordsByLevel(GameLevel level) {
+        List<String> theWords = levelWords.get(level);
+        List<String> results = new ArrayList<>();
+        int n = 10;
+        Set<Integer> set = new HashSet<>();
+        while (set.size() < 10) {
+            set.add(random.nextInt(theWords.size()));
+        }
+        for (int i: set) {
+            results.add(theWords.get(i));
+        }
+        return results;
     }
 
     @Override

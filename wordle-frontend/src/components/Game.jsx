@@ -4,8 +4,9 @@ import WordleBoard from "./WordleBoard";
 import "../styles/Game.css";
 
 const API_BASE = "http://localhost:8080/api/wordle";
+// const API_BASE = "/api/wordle";
 
-export default function Game() {
+function Game({ goBack }) {
   // connect it with the backend
   const [sessionId, setSessionId] = useState(null);
   // by default the level is set to EASY
@@ -15,7 +16,6 @@ export default function Game() {
   const [status, setStatus] = useState("NOT_STARTED");
   const [banner, setBanner] = useState(null);
   const [error, setError] = useState(null);
-  const [answer, setAnswer] = useState(null);
 
   // Start new game
   const startGame = async () => {
@@ -44,17 +44,18 @@ export default function Game() {
 
       if (res.data.status === "WIN") {
         setStatus("WIN");
-        setBanner("You Win!");
+        setBanner(`Congratulations! You Win! The correct word is: ${res.data.answer.toUpperCase()}.`);
+        // setBanner("You Win!!!")
       } else if (res.data.status === "LOSE") {
         setStatus("LOSE");
-        setBanner("Game Over!");
+        setBanner(`Game Over! The answer is: ${res.data.answer.toUpperCase()}.`);
       }
     } catch (err) {
       // Catch invalid word from backend
       const message = err.response?.data?.error || "Error making guess. Please try again.";
       setError(message);
 
-      // Optional: alert user for visibility
+      // alert user for the input errors
       alert(message);
     }
   };
@@ -68,7 +69,6 @@ export default function Game() {
 
   return (
     <div className="game-container">
-      <h1>Wordle Game</h1>
 
       {!sessionId && (
         <div className="start-panel">
@@ -100,16 +100,23 @@ export default function Game() {
         </>
       )}
 
+      
+
       {banner && (
         <div className={`banner ${status.toLowerCase()}`}>
           <p>{banner}</p>
-          <p>The answer is: </p>
-          <p> </p>
+          <button
+          className="restart-btn"
+          onClick={startGame}
+          style={{ marginTop: "20px" }}>
+          New Game
+        </button>
+        <button onClick={goBack}>⬅ Back</button>
         </div>
       )}
 
       {/* After the current game, the user could start a new game*/}
-      {(status === "WIN" || status === "LOSE") && (
+{/*      {(status === "WIN" || status === "LOSE") && (
         <div>
           <button
           className="restart-btn"
@@ -118,7 +125,8 @@ export default function Game() {
           New Game
         </button>
         </div>
-      )}
+      )}*/}
     </div>
   );
 }
+export default Game;

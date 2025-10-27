@@ -1,6 +1,7 @@
 import React from "react";
 import "../styles/WordleBoard.css";
 
+// display the words that users have entered
 export default function WordleBoard({ feedbacks }) {
   return (
     <div className="board">

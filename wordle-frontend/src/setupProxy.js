@@ -1,28 +1,48 @@
 // src/setupProxy.js
-const { createProxyMiddleware } = require('http-proxy-middleware');
+// const { createProxyMiddleware } = require('http-proxy-middleware');
 
-module.exports = function(app) {
+// module.exports = function(app) {
+//   app.use(
+//     '/api',
+//     createProxyMiddleware({
+//       target: 'http://localhost:8080',
+//       changeOrigin: true,
+//       logLevel: 'debug',
+//       onProxyReq: (proxyReq, req, res) => {
+//         console.log(`[Proxy] ${req.method} ${req.url} -> ${proxyReq.path}`);
+//       },
+//       onError: (err, req, res) => {
+//         console.error('Proxy error:', err);
+//       }
+//     })
+//   );
+  
+//   // Add more proxy routes if needed
+//   app.use(
+//     '/auth',
+//     createProxyMiddleware({
+//       target: 'http://localhost:8080',
+//       changeOrigin: true
+//     })
+//   );
+// };
+
+const { createProxyMiddleware } = require("http-proxy-middleware");
+
+module.exports = function (app) {
   app.use(
-    '/api',
+    "/api",
     createProxyMiddleware({
-      target: 'http://localhost:8080',
+      target: "http://localhost:8080",
       changeOrigin: true,
-      logLevel: 'debug',
-      onProxyReq: (proxyReq, req, res) => {
-        console.log(`[Proxy] ${req.method} ${req.url} -> ${proxyReq.path}`);
-      },
-      onError: (err, req, res) => {
-        console.error('Proxy error:', err);
-      }
     })
   );
-  
-  // Add more proxy routes if needed
   app.use(
-    '/auth',
+    "/ws",
     createProxyMiddleware({
-      target: 'http://localhost:8080',
-      changeOrigin: true
+      target: "http://localhost:8080",
+      ws: true,
+      changeOrigin: true,
     })
   );
 };

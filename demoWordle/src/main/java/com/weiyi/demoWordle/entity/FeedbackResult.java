@@ -5,10 +5,14 @@ public class FeedbackResult {
     private List<String> colors;
     private GameStatus status;
 
-    public FeedbackResult(String guess, List<String> colors, GameStatus status) {
+    private String answer;
+
+
+    public FeedbackResult(String guess, List<String> colors, GameStatus status, String answer) {
         this.guess = guess;
         this.colors = colors;
         this.status = status;
+        this.answer = answer;
     }
 
     public String getGuess() {
@@ -21,5 +25,9 @@ public class FeedbackResult {
 
     public GameStatus getStatus() {
         return status;
+    }
+
+    public String getAnswer() {
+        return answer;
     }
 }

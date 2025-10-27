@@ -1,7 +1,7 @@
 package com.weiyi.demoWordle.service;
 
 import com.weiyi.demoWordle.entity.*;
-import com.weiyi.demoWordle.exception.DigitsFoundException;
+import com.weiyi.demoWordle.exception.InvalidLetterException;
 import com.weiyi.demoWordle.exception.InvalidLengthException;
 import com.weiyi.demoWordle.exception.InvalidWordException;
 import com.weiyi.demoWordle.exception.SessionNotFoundException;
@@ -46,7 +46,6 @@ public class GameServiceImpl implements GameService{
 
         sessions.put(sessionId, session);
 
-
         // used to test the method
 //        System.out.printf("Started new %s game (Session: %s) with word: %s%n", level, sessionId, word);
         return session;
@@ -66,8 +65,8 @@ public class GameServiceImpl implements GameService{
             throw new InvalidLengthException(5, guess.length());
         }
         // check if the guess contains digits
-        if (guess.matches(".*\\d+.*")) {
-            throw new DigitsFoundException(guess);
+        if (!guess.matches("[a-zA-Z]+")) {
+            throw new InvalidLetterException(guess);
         }
         guess = guess.toLowerCase();
         // check if the guess is in the dictionary
@@ -85,7 +84,34 @@ public class GameServiceImpl implements GameService{
     @Override
     public GameSession getSession(String sessionId) {
         GameSession session = sessions.get(sessionId);
-        if (session == null) throw new IllegalStateException("Session not found: " + sessionId);
+        if (session == null) {
+            throw new SessionNotFoundException(sessionId);
+        }
         return session;
     }
+
+    @Override
+    public GameSession startGameCheating(GameLevel level) {
+        List<String> words = theLevelWordService.getRandomWordsByLevel(level);
+        int maxRounds = switch (level) {
+            case EASY -> 8;
+            case MEDIUM -> 6;
+            case HARD -> 5;
+            case EXPERT -> 4;
+        };
+
+//        GameSession session = new GameSession(word, maxRounds);
+//        session.setLevel(level);
+//        session.setMode(mode);
+//        String sessionId = UUID.randomUUID().toString();
+//        session.setSessionId(sessionId);
+        return null;
+    }
+
+    @Override
+    public FeedbackResult makeGuessCheating(String sessionId, String guess) {
+        return null;
+    }
+
+
 }
