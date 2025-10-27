@@ -1,9 +1,7 @@
 package com.weiyi.demoWordle.entity;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class GameSession {
     private String answer;
@@ -11,17 +9,10 @@ public class GameSession {
     private final int maxRounds;
     private GameLevel level;
     private GameStatus status;
-    private GameMode mode;
-    private final List<String> history;
-    private final List<List<String>> colorHistory;
+    private final List<String> history = new ArrayList<>();
+    private final List<List<String>> colorHistory = new ArrayList<>();
     private String sessionId;
 
-    // cheating
-    private List<String> candidates = new ArrayList<>();
-
-    // Multiplayer fields
-    private List<String> playerIds;  // multiple players
-    private Map<String, Integer> scores;  // track each player's score
 
 
     // start a new session to guess
@@ -30,11 +21,10 @@ public class GameSession {
         this.maxRounds = maxRounds;
         this.currentRound = 0;
         this.status = GameStatus.IN_PROGRESS;
-        this.history = new ArrayList<>();
-        this.colorHistory = new ArrayList<>();
-        this.playerIds = new ArrayList<>();
-        this.scores = new HashMap<>();
     }
+
+    // new session for multiple players
+
 
     // under normal game
     public FeedbackResult makeGuess(String guess) {
@@ -75,6 +65,7 @@ public class GameSession {
         return colors;
     }
 
+
     public String getAnswer() {
         return answer;
     }
@@ -102,13 +93,6 @@ public class GameSession {
         this.status = status;
     }
 
-    public GameMode getMode() {
-        return mode;
-    }
-
-    public void setMode(GameMode mode) {
-        this.mode = mode;
-    }
 
     public List<String> getHistory() {
         return history;
@@ -126,20 +110,4 @@ public class GameSession {
         this.sessionId = sessionId;
     }
 
-
-    public List<String> getPlayerIds() {
-        return playerIds;
-    }
-
-    public void setPlayerIds(List<String> playerIds) {
-        this.playerIds = playerIds;
-    }
-
-    public Map<String, Integer> getScores() {
-        return scores;
-    }
-
-    public void setScores(Map<String, Integer> scores) {
-        this.scores = scores;
-    }
 }

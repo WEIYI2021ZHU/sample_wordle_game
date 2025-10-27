@@ -14,6 +14,9 @@ public class GameConfig {
             GameLevel.EXPERT, 4
     );
 
+    public GameConfig() {
+    }
+
     public int getMaxRounds(GameLevel level) {
         // default to medium level
         return maxRoundsPerLevel.getOrDefault(level, 6);

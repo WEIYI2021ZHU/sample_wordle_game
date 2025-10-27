@@ -3,9 +3,7 @@ package com.weiyi.demoWordle.rest;
 
 import com.weiyi.demoWordle.entity.*;
 import com.weiyi.demoWordle.service.GameService;
-import com.weiyi.demoWordle.service.MultiplayerService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -17,7 +15,6 @@ import java.util.Map;
 public class WordController {
 
     private GameService gameService;
-//    private MultiplayerService multiplayerService;
 
     @Autowired
     public WordController(GameService gameService) {
@@ -45,20 +42,42 @@ public class WordController {
         return gameService.startNewGame(level, mode);
     }
 
+//    @PostMapping("/start")
+//    public GameStartResponse startGame(@RequestParam GameLevel level,
+//                                 @RequestParam GameMode mode) {
+//        GameSession session = gameService.startNewGame(level, mode);
+//        GameStartResponse response = new GameStartResponse(session.getMaxRounds(), level, mode, session.getStatus());
+//        response.setSessionId(session.getSessionId());
+//        return response;
+//    }
+
     @PostMapping("/guess/{sessionId}")
     public FeedbackResult makeGuess(@PathVariable String sessionId,
                                     @RequestBody Map<String, String> body) {
         String guess = body.get("guess");
-//        GameSession session = gameService.getSession(sessionId);
         return gameService.makeGuess(sessionId, guess);
     }
 
     // get the session by id
+    // use to check the current session, history and answers
     @GetMapping("/state/{sessionId}")
     public GameSession getState(@PathVariable String sessionId) {
         GameSession session = gameService.getSession(sessionId);
         return session;
     }
+
+    @PostMapping("/multi/start")
+    public GameRoom startMultiplayerGame(
+            @RequestParam GameLevel level,
+            @RequestParam String playerId) {
+        return gameService.startMultiplayerGame(level, playerId);
+    }
+
+//    @PostMapping("/multi/join/{sessionId}")
+//    public GameStartResponse joinGame(@PathVariable String sessionId, @RequestParam String playerId) {
+//        return gameService.joinGame(sessionId, playerId);
+//    }
+
 
     // Multiplayer endpoints
 //    @PostMapping("/multi/start")
@@ -69,16 +88,16 @@ public class WordController {
     // remind the player that another one has joined the game
 //    @PostMapping("/multi/join/{sessionId}")
 //    public ResponseEntity<String> joinMultiplayer(@PathVariable String sessionId, @RequestParam String playerId) {
-//        multiplayerService.joinGame(sessionId, playerId);
+//        gameService.joinGame(sessionId, playerId);
 //        return ResponseEntity.ok("Player " + playerId + " joined game " + sessionId);
 //    }
-//
+////
 //    @PostMapping("/multi/guess/{sessionId}")
 //    public FeedbackResult makeMultiplayerGuess(
 //            @PathVariable String sessionId,
 //            @RequestParam String playerId,
 //            @RequestBody Map<String, String> body) {
 //        String guess = body.get("guess");
-//        return multiplayerService.makeGuess(sessionId, playerId, guess);
+//        return gameService.makeMultiplayerGuess(sessionId, playerId, guess);
 //    }
 }

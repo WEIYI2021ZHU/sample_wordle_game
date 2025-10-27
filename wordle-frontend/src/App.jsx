@@ -13,7 +13,7 @@ function App() {
       {!mode && (
         <div className="mode-select">
           <button onClick={() => setMode("SINGLE")}>Single Player</button>
-          <button onClick={() => setMode("MULTIPLE")}>Multiplayer</button>
+          <button onClick={() => setMode("MULTIPLE")}>Multiple player</button>
         </div>
       )}
 

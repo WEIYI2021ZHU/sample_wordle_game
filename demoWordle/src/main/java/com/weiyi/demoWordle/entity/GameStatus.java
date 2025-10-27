@@ -3,5 +3,6 @@ package com.weiyi.demoWordle.entity;
 public enum GameStatus {
     IN_PROGRESS,
     WIN,
-    LOSE
+    LOSE,
+    WAITING_FOR_PLAYERS
 }

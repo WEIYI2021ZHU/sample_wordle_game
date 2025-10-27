@@ -3,16 +3,17 @@ package com.weiyi.demoWordle.entity;
 import lombok.Data;
 
 @Data
-public class JoinMessage {
+public class GuessMessage {
     private String roomId;
     private String playerId;
+    private String guess;
 
-    public String getRoomId() {
+    public String getSessionId() {
         return roomId;
     }
 
-    public void setRoomId(String roomId) {
-        this.roomId = roomId;
+    public void setSessionId(String sessionId) {
+        this.roomId = sessionId;
     }
 
     public String getPlayerId() {
@@ -21,5 +22,13 @@ public class JoinMessage {
 
     public void setPlayerId(String playerId) {
         this.playerId = playerId;
+    }
+
+    public String getGuess() {
+        return guess;
+    }
+
+    public void setGuess(String guess) {
+        this.guess = guess;
     }
 }

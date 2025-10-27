@@ -6,6 +6,7 @@ public class FeedbackResult {
     private GameStatus status;
 
     private String answer;
+    private String message;
 
 
     public FeedbackResult(String guess, List<String> colors, GameStatus status, String answer) {
@@ -29,5 +30,25 @@ public class FeedbackResult {
 
     public String getAnswer() {
         return answer;
+    }
+
+    public void setGuess(String guess) {
+        this.guess = guess;
+    }
+
+    public void setColors(List<String> colors) {
+        this.colors = colors;
+    }
+
+    public void setStatus(GameStatus status) {
+        this.status = status;
+    }
+
+    public void setAnswer(String answer) {
+        this.answer = answer;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 }
