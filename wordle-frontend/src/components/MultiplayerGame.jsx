@@ -17,7 +17,7 @@ export default function MultiplayerGame({ goBack }) {
     const socket = new SockJS("/ws");
     const client = Stomp.over(socket);
     client.connect({}, () => {
-      client.subscribe(`/topic/game/${sessionId}`, (message) => {
+      client.subscribe(`/topic/wordle/${sessionId}`, (message) => {
         const data = JSON.parse(message.body);
         if (data.status) setBanner(`Game Update: ${data.status}`);
         setFeedbacks((prev) => [...prev, data]);
@@ -28,7 +28,7 @@ export default function MultiplayerGame({ goBack }) {
   };
 
   const startGame = async () => {
-    const res = await axios.post(`/api/game/multi/start?level=EASY&playerId=${playerId}`);
+    const res = await axios.post(`/api/wordle/multi/start?level=EASY&playerId=${playerId}`);
     setSessionId(res.data.sessionId);
     setOpponentId(res.data.opponentId);
     setBanner("🎮 Waiting for opponent...");
@@ -36,7 +36,7 @@ export default function MultiplayerGame({ goBack }) {
   };
 
   const joinGame = async () => {
-    const res = await axios.post(`/api/game/multi/join/${sessionId}?playerId=${playerId}`);
+    const res = await axios.post(`/api/wordle/multi/join/${sessionId}?playerId=${playerId}`);
     setOpponentId(res.data.opponentId);
     setBanner(`Game started! You vs ${res.data.opponentId}`);
     connectWebSocket(sessionId, playerId);

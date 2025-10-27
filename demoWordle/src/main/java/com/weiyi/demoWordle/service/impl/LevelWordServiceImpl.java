@@ -1,6 +1,7 @@
-package com.weiyi.demoWordle.service;
+package com.weiyi.demoWordle.service.impl;
 
 import com.weiyi.demoWordle.entity.GameLevel;
+import com.weiyi.demoWordle.service.LevelWordService;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
@@ -15,7 +16,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-public class LevelWordServiceImpl implements LevelWordService{
+public class LevelWordServiceImpl implements LevelWordService {
 
     private List<String> words = new ArrayList<>();
     private Map<GameLevel, List<String>> levelWords = new HashMap<>();

@@ -1,17 +1,19 @@
-package com.weiyi.demoWordle.service;
+package com.weiyi.demoWordle.service.impl;
 
 import com.weiyi.demoWordle.entity.*;
 import com.weiyi.demoWordle.exception.InvalidLetterException;
 import com.weiyi.demoWordle.exception.InvalidLengthException;
 import com.weiyi.demoWordle.exception.InvalidWordException;
 import com.weiyi.demoWordle.exception.SessionNotFoundException;
+import com.weiyi.demoWordle.service.GameService;
+import com.weiyi.demoWordle.service.LevelWordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 
 @Service
-public class GameServiceImpl implements GameService{
+public class GameServiceImpl implements GameService {
 
     private LevelWordService theLevelWordService;
     private Map<String, GameSession> sessions;
