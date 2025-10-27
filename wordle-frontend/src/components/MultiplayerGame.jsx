@@ -64,7 +64,7 @@ export default function MultiplayerGame({ goBack }) {
 
     const { roomId: newId } = res.data;
 
-    if (!newId) throw new Error("No session ID returned from server.");
+    if (!newId) throw new Error("No Room ID returned from server.");
 
     setRoomId(newId);
     setBanner(`Waiting for opponent... Share this code: ${newId}`);
@@ -127,20 +127,17 @@ export default function MultiplayerGame({ goBack }) {
         <>
           <input placeholder="Your Name" value={playerId} onChange={(e) => setPlayerId(e.target.value)} />
           <input value={roomId} onChange={(e) => setRoomId(e.target.value)} 
-            placeholder="Enter session code to join"/>
-          <button onClick={startGame}>Create Game</button>
+            placeholder="Enter room code to join"/>
+          <button onClick={startGame}>Create Room</button>
           <button onClick={joinGame}>Join Game</button>
         </>
       )}
       
-      {status === "WAITING_FOR_PLAYERS" && (
-        <>
-         {banner && <div className="banner">
+      {status === "WAITING_FOR_PLAYERS" && banner && (
+        <div className="banner">
+          {banner}
           <button onClick={goBack}>Back</button>
         </div>
-          }
-          
-        </>
       )}
 
       {status === "IN_PROGRESS" && roomId && (
@@ -148,12 +145,8 @@ export default function MultiplayerGame({ goBack }) {
           <WordleBoard feedbacks={feedbacks} />
           <input value={guess} onChange={(e) => setGuess(e.target.value)} placeholder="Your guess" />
           <button onClick={makeGuess}>Send Guess</button>
-          {banner && <div className="banner">{banner}
-            <button onClick={goBack}>Back</button>
-          </div>}
         </>
       )}
-      <button onClick={goBack}>⬅ Back</button>
     </div>
   );
 }

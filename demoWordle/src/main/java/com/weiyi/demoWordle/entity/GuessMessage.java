@@ -8,7 +8,7 @@ public class GuessMessage {
     private String playerId;
     private String guess;
 
-    public String getSessionId() {
+    public String getRoomId() {
         return roomId;
     }
 

@@ -63,7 +63,7 @@ public class WebSocketGameController {
     @MessageMapping("/guess")
     public void guess(@Payload GuessMessage msg) {
         FeedbackResult feedback = gameService.makeMultiplayerGuess(
-                msg.getSessionId(), msg.getPlayerId(), msg.getGuess());
-        messagingTemplate.convertAndSend("/topic/wordle/" + msg.getSessionId(), feedback);
+                msg.getRoomId(), msg.getPlayerId(), msg.getGuess());
+        messagingTemplate.convertAndSend("/topic/wordle/" + msg.getRoomId(), feedback);
     }
 }
