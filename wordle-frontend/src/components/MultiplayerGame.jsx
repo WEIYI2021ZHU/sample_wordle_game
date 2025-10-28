@@ -4,6 +4,7 @@ import SockJS from "sockjs-client";
 import { Stomp } from "@stomp/stompjs";
 import WordleBoard from "./WordleBoard";
 import "../styles/Game.css";
+import "../styles/MultiplayerGame.css";
 
 const API_BASE = "http://localhost:8080/api/wordle";
 
@@ -25,16 +26,21 @@ export default function MultiplayerGame({ goBack }) {
       client.subscribe(`/topic/wordle/${roomId}`, (message) => {
         const data = JSON.parse(message.body);
         console.log("Received:", data);
-        // if (data.status.includes("joined")) {
-        //   setOpponentId(data.playerId || "Unknown");
-        // }
-        // else {
-        //   setFeedbacks((prev) => [...prev, data]);
-        // }
+
+          if (data.error) {
+            alert(`${data.text}`);
+            return;
+          }
+
+         // At first, wait for another player
          if (data.status === "WAITING_FOR_PLAYERS") {
             setBanner(`Waiting for opponent... Share this code: ${roomId}`);
             setStatus("WAITING_FOR_PLAYERS");
-          } else if (data.status === "IN_PROGRESS") {
+          } else if (data.status === "IN_PROGRESS" && data.guess && data.colors) {
+              // this is a feedback result
+            setFeedbacks((prev) => [...prev, data]);
+          } 
+          else if (data.status === "IN_PROGRESS") {
             setBanner("Both players joined! Game started.");
             setStatus("IN_PROGRESS");
           } else if (data.status === "WIN") {
@@ -43,12 +49,16 @@ export default function MultiplayerGame({ goBack }) {
           } else if (data.status === "LOSE") {
             setBanner("Game over! You lost.");
             setStatus("LOSE");
-          } else {
-            // Feedback or other game data
-            setFeedbacks((prev) => [...prev, data]);
           }
         
       });
+
+      client.subscribe("/topic/errors", (message) => {
+      const data = JSON.parse(message.body);
+      console.error("WebSocket error:", data.message);
+      alert(`${data.message}`);
+      });
+
       client.send("/app/join", {}, JSON.stringify({ roomId, playerId }));
     });
     setStompClient(client);
@@ -62,6 +72,7 @@ export default function MultiplayerGame({ goBack }) {
       `${API_BASE}/multi/start?level=EASY&playerId=${playerId}`
     );
 
+    // in case the parameter is not parsed properly, give roomId a new name
     const { roomId: newId } = res.data;
 
     if (!newId) throw new Error("No Room ID returned from server.");
@@ -100,7 +111,7 @@ export default function MultiplayerGame({ goBack }) {
       setOpponentId(playerId);
       // setBanner("Joined game! Waiting for host...");
     } catch (err) {
-      const message = err.response?.data?.error || "Error making guess. Please try again.";
+      const message = err.response?.data?.error || "Error joining. Please try again.";
       alert(message);
       alert("Invalid session ID or game not found.");
     }
@@ -111,13 +122,18 @@ export default function MultiplayerGame({ goBack }) {
     if (!stompClient || !stompClient.connected)
       return alert("Not connected to the game yet!");
 
-    stompClient.send(
-      "/app/guess",
-      {},
-      JSON.stringify({ roomId, playerId, guess})
-    );
-
-    setGuess("");
+    try {
+      stompClient.send(
+        "/app/guess",
+        {},
+        JSON.stringify({ roomId, playerId, guess})
+      );
+      setGuess("");
+    }
+    catch (err) {
+      alert("Failed to send your guess.");
+    }
+    
 
   };
 
@@ -125,8 +141,10 @@ export default function MultiplayerGame({ goBack }) {
     <div className="game-container">
       {status === "NOT_STARTED" && (
         <>
-          <input placeholder="Your Name" value={playerId} onChange={(e) => setPlayerId(e.target.value)} />
-          <input value={roomId} onChange={(e) => setRoomId(e.target.value)} 
+          <input placeholder="Your Name" value={playerId} className = "input_player_name"
+            onChange={(e) => setPlayerId(e.target.value)} />
+          <input value={roomId} className = "input_roomId"
+            onChange={(e) => setRoomId(e.target.value)} 
             placeholder="Enter room code to join"/>
           <button onClick={startGame}>Create Room</button>
           <button onClick={joinGame}>Join Game</button>
@@ -136,17 +154,27 @@ export default function MultiplayerGame({ goBack }) {
       {status === "WAITING_FOR_PLAYERS" && banner && (
         <div className="banner">
           {banner}
+          <br></br>
           <button onClick={goBack}>Back</button>
         </div>
       )}
 
       {status === "IN_PROGRESS" && roomId && (
         <>
+          <input value={guess} maxLength={5} className="guess-input"
+            onChange={(e) => setGuess(e.target.value)} placeholder="Your guess" />
+          <button onClick={makeGuess} className="guess-button">Send Guess</button>
           <WordleBoard feedbacks={feedbacks} />
-          <input value={guess} onChange={(e) => setGuess(e.target.value)} placeholder="Your guess" />
-          <button onClick={makeGuess}>Send Guess</button>
         </>
       )}
+
+      {status === "WIN" || status === "LOSE" && banner && (
+          <div className="banner">
+          {banner}
+          <button onClick={goBack}>Back</button>
+        </div>
+        )
+      }
     </div>
   );
 }

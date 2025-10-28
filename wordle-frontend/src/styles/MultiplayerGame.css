@@ -1,0 +1,27 @@
+.guess-input {
+  margin-right: 10px;
+}
+
+.guess-button {
+  margin-left: 10px;
+}
+
+.game-container {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  /*justify-content: center; /* Horizontally centers content */
+  align-items: center;    /* Vertically centers content */
+}
+
+.input_player_name {
+  margin-top: 10px;
+}
+
+.input_roomId {
+  margin-top: 10px;
+}
+
+button {
+  margin-top: 20px;
+}
