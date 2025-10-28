@@ -21,19 +21,6 @@ public class WordController {
         this.gameService = gameService;
     }
 
-//    @Autowired
-//    public WordController(GameService gameService, MultiplayerService multiplayerService) {
-//        this.gameService = gameService;
-//        this.multiplayerService = multiplayerService;
-//    }
-
-
-//
-//    // test webpage to show all the words we have
-//    @GetMapping("/words")
-//    public List<String> getWord() {
-//        return wordService.getAllWords();
-//    }
 
     // At the start, user could choose a level of difficulty
     @PostMapping("/start")
