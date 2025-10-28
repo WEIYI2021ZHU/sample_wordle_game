@@ -10,8 +10,8 @@ const API_BASE = "http://localhost:8080/api/wordle";
 
 export default function MultiplayerGame({ goBack }) {
   const [roomId, setRoomId] = useState("");
+  const [level, setLevel] = useState("EASY");
   const [playerId, setPlayerId] = useState("");
-  const [opponentId, setOpponentId] = useState(null);
   const [feedbacks, setFeedbacks] = useState([]);
   const [guess, setGuess] = useState("");
   const [stompClient, setStompClient] = useState(null);
@@ -36,18 +36,30 @@ export default function MultiplayerGame({ goBack }) {
          if (data.status === "WAITING_FOR_PLAYERS") {
             setBanner(`Waiting for opponent... Share this code: ${roomId}`);
             setStatus("WAITING_FOR_PLAYERS");
-          } else if (data.status === "IN_PROGRESS" && data.guess && data.colors) {
+          }
+          else if (data.status === "IN_PROGRESS" && data.guess && data.colors) {
               // this is a feedback result
             setFeedbacks((prev) => [...prev, data]);
+            if (data.status) {
+              setStatus(data.status);
+            }
+            // if (data.status === "WIN") {
+            //   setBanner(`Congratulations! The answer is ${data.answer.toUpperCase()}`);
+            //   setStatus("WIN");
+            // }
+            // else if (data.status === "LOSE") {
+            //   setBanner(`Game over! You lost. The answer is ${data.answer.toUpperCase()}`);
+            //   setStatus("LOSE");
+            // }
           } 
           else if (data.status === "IN_PROGRESS") {
             setBanner("Both players joined! Game started.");
             setStatus("IN_PROGRESS");
           } else if (data.status === "WIN") {
-            setBanner(`Player ${data.playerId} wins!`);
+            setBanner(`Congratulations to you all! The answer is ${data.answer.toUpperCase()}`);
             setStatus("WIN");
           } else if (data.status === "LOSE") {
-            setBanner("Game over! You lost.");
+            setBanner(`Game over! You lost. The answer is ${data.answer.toUpperCase()}`);
             setStatus("LOSE");
           }
         
@@ -69,7 +81,7 @@ export default function MultiplayerGame({ goBack }) {
     if (!playerId) return alert("Please Enter your name");
     try {
     const res = await axios.post(
-      `${API_BASE}/multi/start?level=EASY&playerId=${playerId}`
+      `${API_BASE}/multi/start?level=${level}&playerId=${playerId}`
     );
 
     // in case the parameter is not parsed properly, give roomId a new name
@@ -108,7 +120,7 @@ export default function MultiplayerGame({ goBack }) {
       // const res = await axios.post("/app/guess");
       setStatus("IN_PROGRESS");
       connectWebSocket(roomId, playerId);
-      setOpponentId(playerId);
+      // setOpponentId(playerId);
       // setBanner("Joined game! Waiting for host...");
     } catch (err) {
       const message = err.response?.data?.error || "Error joining. Please try again.";
@@ -146,8 +158,16 @@ export default function MultiplayerGame({ goBack }) {
           <input value={roomId} className = "input_roomId"
             onChange={(e) => setRoomId(e.target.value)} 
             placeholder="Enter room code to join"/>
+          <label>Choose Level:</label>
+          <select onChange={(e) => setLevel(e.target.value)} value={level}>
+            <option value="EASY">Easy</option>
+            <option value="MEDIUM">Medium</option>
+            <option value="HARD">Hard</option>
+            <option value="EXPERT">Expert</option>
+          </select>
           <button onClick={startGame}>Create Room</button>
           <button onClick={joinGame}>Join Game</button>
+          <button onClick={goBack}>Back</button>
         </>
       )}
       
@@ -161,6 +181,7 @@ export default function MultiplayerGame({ goBack }) {
 
       {status === "IN_PROGRESS" && roomId && (
         <>
+          {playerId && <label>Player: {playerId}</label>}
           <input value={guess} maxLength={5} className="guess-input"
             onChange={(e) => setGuess(e.target.value)} placeholder="Your guess" />
           <button onClick={makeGuess} className="guess-button">Send Guess</button>
@@ -168,9 +189,10 @@ export default function MultiplayerGame({ goBack }) {
         </>
       )}
 
-      {status === "WIN" || status === "LOSE" && banner && (
+      {(status === "WIN" || status === "LOSE") && banner && (
           <div className="banner">
           {banner}
+          <br/>
           <button onClick={goBack}>Back</button>
         </div>
         )

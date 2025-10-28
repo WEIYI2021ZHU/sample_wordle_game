@@ -91,7 +91,7 @@ public class WebSocketGameController {
             errorMsg.put("error", true);
             errorMsg.put("text", ex.getMessage());
             messagingTemplate.convertAndSend("/topic/wordle/" + msg.getRoomId(), errorMsg);
-            ex.printStackTrace();
+//            ex.printStackTrace();
         }
 
 
@@ -100,7 +100,7 @@ public class WebSocketGameController {
     @MessageExceptionHandler
     public void handleWebSocketException(Exception ex) {
         // For debugging
-        ex.printStackTrace();
+//        ex.printStackTrace();
 
         // Optional: send to a global error topic
         messagingTemplate.convertAndSend("/topic/errors", Map.of(

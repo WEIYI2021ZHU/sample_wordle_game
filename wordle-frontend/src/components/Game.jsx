@@ -81,6 +81,8 @@ function Game({ goBack }) {
           </select>
           <br/>
           <button onClick={startGame}>Start Game</button>
+          <br/>
+          <button onClick={goBack}>Back</button>
         </div>
       )}
 
@@ -111,7 +113,7 @@ function Game({ goBack }) {
           style={{ marginTop: "20px" }}>
           New Game
         </button>
-        <button onClick={goBack}>⬅ Back</button>
+        <button onClick={goBack}>Back</button>
         </div>
       )}
 

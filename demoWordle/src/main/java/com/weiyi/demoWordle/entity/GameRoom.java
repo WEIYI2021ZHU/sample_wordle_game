@@ -57,7 +57,8 @@ public class GameRoom {
         if (guess.equals(answer)) {
             status = GameStatus.WIN;
             feedback.setStatus(status);
-            feedback.setMessage(playerId + " guessed correctly!");
+//            feedback.setMessage(playerId + " guessed correctly!");
+            feedback.setMessage(playerId);
         } else if (currentRound >= maxRounds) {
             status = GameStatus.LOSE;
             feedback.setStatus(status);
