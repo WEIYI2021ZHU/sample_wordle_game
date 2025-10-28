@@ -1,6 +1,5 @@
 package com.weiyi.demoWordle.service.impl;
 
-import com.weiyi.demoWordle.config.GameConfig;
 import com.weiyi.demoWordle.entity.*;
 import com.weiyi.demoWordle.exception.InvalidLetterException;
 import com.weiyi.demoWordle.exception.InvalidLengthException;
@@ -20,14 +19,12 @@ public class GameServiceImpl implements GameService {
     private Map<String, GameSession> sessions;
     private Map<String, GameRoom> rooms;
     private Map<String, GameStartResponse> responseMap;
-    private GameConfig gameConfig;
 
     @Autowired
     public GameServiceImpl(LevelWordService theLevelWordService) {
         this.theLevelWordService = theLevelWordService;
         this.sessions = new HashMap<>();
         this.rooms = new HashMap<>();
-        this.gameConfig = new GameConfig();
         this.responseMap = new HashMap<>();
     }
 
@@ -156,16 +153,6 @@ public class GameServiceImpl implements GameService {
         // check if this session is valid
         if (room == null) {
             throw new SessionNotFoundException(roomId);
-        }
-        if (guess == null) {
-            throw new RuntimeException("Please enter a five-letter word");
-        }
-        if (guess.length() != 5) {
-            throw new InvalidLengthException(5, guess.length());
-        }
-        // check if the guess contains digits
-        if (!guess.matches("[a-zA-Z]+")) {
-            throw new InvalidLetterException(guess);
         }
         guess = guess.toLowerCase();
         // check if the guess is in the dictionary
